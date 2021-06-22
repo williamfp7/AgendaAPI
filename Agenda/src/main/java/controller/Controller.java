@@ -18,27 +18,18 @@ import model.ContatoDAO;
 import model.DAO;
 import model.JavaBeans;
 
-/**
- * Servlet implementation class Controller
- */
+
 @WebServlet({ "/Controller", "/main" })
 public class Controller extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	JavaBeans contato=new JavaBeans();
 	DAO contatoDAO=new ContatoDAO();
-    /**
-     * Default constructor. 
-     */
+	//DAO contatoDAO=new FakeDAO();//Dependence injection
     public Controller() {
         // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
 		ArrayList<JavaBeans> contatos=new ArrayList<JavaBeans>();
 		if(request.getParameter("id")==null) {//Pega Todos
 			contatos=contatoDAO.recuperarContato();
@@ -51,36 +42,24 @@ public class Controller extends HttpServlet {
 		rd.forward(request, response);
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		preencher(request);
 		contatoDAO.inserirContato(contato);
 		response.sendRedirect("main");
 	}
 
-	/**
-	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
-	 */
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		preencher(getFields(request));
 		contatoDAO.alterarContato(contato);
 		response.sendRedirect("main");
 	}
 
-	/**
-	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
-	 */
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		preencher(getFields(request));
 		contatoDAO.deletarContato(contato);
 		response.sendRedirect("main");
 	}
-	/**
-	 * @param request
-	 * @return Hashmap<String,String> 
-	 */
+
 	private Map<String,String> getFields(HttpServletRequest request) {
 		Map<String,String>campos=new HashMap<String,String>();
 		BufferedReader br = null;
