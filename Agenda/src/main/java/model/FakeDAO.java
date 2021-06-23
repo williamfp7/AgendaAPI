@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 
 public class FakeDAO implements DAO {
-
+	JavaBeansFactory factory=new JavaBeansFactory();
 	@Override
 	public void inserirContato(JavaBeans contato) {
 		showSomething(contato);
@@ -12,15 +12,15 @@ public class FakeDAO implements DAO {
 	@Override
 	public ArrayList<JavaBeans> recuperarContato(JavaBeans contato) {
 		ArrayList<JavaBeans> contatos=new ArrayList<>();
-		contatos.add(new JavaBeans("William","98423-4954","williamfp7@yahoo.com.br","1"));
+		contatos.add(factory.create("William","98423-4954","williamfp7@yahoo.com.br","1"));
 		return contatos;
 	}
 
 	@Override
 	public ArrayList<JavaBeans> recuperarContato() {
 		ArrayList<JavaBeans> contatos=new ArrayList<>();
-		contatos.add(new JavaBeans("William","98423-4954","williamfp7@yahoo.com.br","1"));
-		contatos.add(new JavaBeans("Pedro","99999-9999","pedro@mail.com","2"));
+		contatos.add(factory.create("William","98423-4954","williamfp7@yahoo.com.br","1"));
+		contatos.add(factory.create("Pedro","99999-9999","pedro@mail.com","2"));
 		return contatos;
 	}
 

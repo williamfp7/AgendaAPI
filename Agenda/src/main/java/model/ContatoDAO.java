@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class ContatoDAO implements DAO{
 	DataBase db=new MySQL();
-	
+	JavaBeansFactory factory=new JavaBeansFactory();
 	/** CRUD CREATE **/
 	@Override
 	public void inserirContato(JavaBeans contato) {
@@ -30,7 +30,7 @@ public class ContatoDAO implements DAO{
 			PreparedStatement pst=con.prepareStatement(sql);
 			ResultSet rs=pst.executeQuery();
 			while(rs.next()) {
-				contatos.add(new JavaBeans(rs.getString("nome"),rs.getString("fone"),rs.getString("email"),rs.getString("id")));
+				contatos.add(factory.create(rs.getString("nome"),rs.getString("fone"),rs.getString("email"),rs.getString("id")));
 			}
 			return contatos;
 		} catch (Exception e) {

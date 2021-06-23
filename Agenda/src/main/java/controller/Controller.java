@@ -17,12 +17,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import model.ContatoDAO;
 import model.DAO;
 import model.JavaBeans;
+import model.JavaBeansFactory;
 
 
 @WebServlet({ "/Controller", "/main" })
 public class Controller extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	JavaBeans contato=new JavaBeans();
+	//JavaBeans contato=new JavaBeans();
+	JavaBeansFactory factory=new JavaBeansFactory();
 	DAO contatoDAO=new ContatoDAO();
 	//DAO contatoDAO=new FakeDAO();//Dependence injection
     public Controller() {
@@ -35,7 +37,7 @@ public class Controller extends HttpServlet {
 			contatos=contatoDAO.recuperarContato();
 		}else{//Pega apenas um
 			preencher(request);
-			contatos=contatoDAO.recuperarContato(contato);
+			contatos=contatoDAO.recuperarContato(factory.create());
 		}
 		request.setAttribute("contatos", contatos);
 		RequestDispatcher rd=request.getRequestDispatcher("view.jsp");
@@ -43,20 +45,17 @@ public class Controller extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		preencher(request);
-		contatoDAO.inserirContato(contato);
+		contatoDAO.inserirContato(preencher(request));
 		response.sendRedirect("main");
 	}
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		preencher(getFields(request));
-		contatoDAO.alterarContato(contato);
+		contatoDAO.alterarContato(preencher(getFields(request)));
 		response.sendRedirect("main");
 	}
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		preencher(getFields(request));
-		contatoDAO.deletarContato(contato);
+		contatoDAO.deletarContato(preencher(getFields(request)));
 		response.sendRedirect("main");
 	}
 
@@ -82,17 +81,11 @@ public class Controller extends HttpServlet {
 		return null;
 	}
 	
-	private void preencher(Map<String,String> data) {
-		contato.setNome(data.get("nome"));
-		contato.setFone(data.get("fone"));
-		contato.setEmail(data.get("email"));
-		contato.setId(data.get("id"));
+	private JavaBeans preencher(Map<String,String> data) {
+		return factory.create(data.get("nome"),data.get("fone"),data.get("email"),data.get("id"));
 	}
 	
-	private void preencher(HttpServletRequest request) {
-		contato.setNome(request.getParameter("nome"));
-		contato.setFone(request.getParameter("fone"));
-		contato.setEmail(request.getParameter("email"));
-		contato.setId(request.getParameter("id"));
+	private JavaBeans preencher(HttpServletRequest request) {
+		return factory.create(request.getParameter("nome"),request.getParameter("fone"),request.getParameter("email"),request.getParameter("id"));
 	}
 }
